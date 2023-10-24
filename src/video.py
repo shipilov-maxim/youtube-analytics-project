@@ -10,13 +10,14 @@ class Video:
 
         api = self.get_service()
 
-        video_response: dict = api.videos().list(id=self.video_id, part='snippet,statistics').execute()
-
-        self.video_title: str = video_response['items'][0]['snippet']['title']
-        self.channel_title: str = video_response['items'][0]['snippet']['channelTitle']
+        video_response: dict = api.videos().list(id=self.video_id,
+                                                 part='snippet,contentDetails,statistics').execute()['items'][0]
+        self.video_title: str = video_response['snippet']['title']
+        self.channel_title: str = video_response['snippet']['channelTitle']
         self.url = f"https://www.youtube.com/watch?v={self.video_id}&ab_channel={self.channel_title}"
-        self.view_count: int = video_response['items'][0]['statistics']['viewCount']
-        self.like_count: int = video_response['items'][0]['statistics']['likeCount']
+        self.view_count: int = video_response['statistics']['viewCount']
+        self.like_count: int = video_response['statistics']['likeCount']
+        self.duration: int = video_response['contentDetails']['duration']
 
     def __str__(self):
         return f"{self.video_title}"
