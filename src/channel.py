@@ -1,13 +1,11 @@
 import json
-import os
 from pathlib import Path
-from googleapiclient.discovery import build
+from src.video import MixApi
 
 JSON_PATH = Path(__file__).resolve().parent / "channels.json"
-api_key: str = os.getenv('API_KEY')
 
 
-class Channel:
+class Channel(MixApi):
     """Класс для ютуб-канала"""
 
     def __init__(self, channel_id: str) -> None:
@@ -46,13 +44,7 @@ class Channel:
         channel = youtube.channels().list(id=self.channel_id, part='snippet,statistics').execute()
         print(json.dumps(channel, indent=2, ensure_ascii=False))
 
-    @classmethod
-    def get_service(cls):
-        """Класс-метод, возвращающий объект для работы с YouTube API"""
-        return build("youtube", "v3", developerKey=api_key)
-
     def to_json(self, file):
         """Загружает все публичные атрибуты объекта и свойства property в объект json"""
         with open(file, "a") as json_file:
             return json.dump(self.__dict__, json_file, indent=2, ensure_ascii=False)
-

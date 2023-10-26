@@ -1,13 +1,9 @@
-from googleapiclient.discovery import build
 from datetime import timedelta
-from src.video import Video
+from src.video import Video, MixApi
 import isodate
-import os
-
-api_key: str = os.getenv('API_KEY')
 
 
-class PlayList:
+class PlayList(MixApi):
     def __init__(self, playlist_id):
         self.playlist_id = playlist_id
         self.url = f'https://www.youtube.com/playlist?list={playlist_id}'
@@ -38,8 +34,3 @@ class PlayList:
 
     def get_videos(self) -> list[Video]:
         return [Video(video["contentDetails"]["videoId"]) for video in self.video_ids]
-
-    @classmethod
-    def get_service(cls):
-        """Класс-метод, возвращающий объект для работы с YouTube API"""
-        return build("youtube", "v3", developerKey=api_key)
